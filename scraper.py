@@ -15,8 +15,7 @@ import datetime
 
 
 BASE_URL = "https://www.renthop.com/search/nyc"
-#NUM_PAGES = 295
-NUM_PAGES = 1
+NUM_PAGES = 295
 EARLIEST_DATE = datetime.date(2017,07,15)
 
 def get_soup_for_page(page):
@@ -71,10 +70,13 @@ def get_availability_stats():
         total_listings = len(listings_and_availability)
         histogram = defaultdict(int)
         late_enough_dates = 0
-        for avail_date in listings_and_availability.values():
+        late_enough_listings = {}
+        for listing in listings_and_availability:
+                avail_date = listings_and_availability[listing]
                 histogram[avail_date] += 1
                 if (avail_date >= EARLIEST_DATE):
                         late_enough_dates += 1
+                        late_enough_listings[listing] = avail_date
         print("Total number of listings: ")
         print(total_listings)
         print("Total number of listings with availability starting after " + str(EARLIEST_DATE))
@@ -82,5 +84,7 @@ def get_availability_stats():
         print("Percentage: ")
         print(float(late_enough_dates)/float(total_listings))
         print(histogram)
+        print("Listings that are available after the indicated date: ")
+        print(late_enough_listings)
 
 get_availability_stats()
