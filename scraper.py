@@ -12,10 +12,11 @@ import requests
 from datetime import date
 from collections import defaultdict
 import datetime
+import sys
 
 
 BASE_URL = "https://www.renthop.com/search/nyc"
-NUM_PAGES = 295
+NUM_PAGES = 230
 EARLIEST_DATE = datetime.date(2017,07,15)
 
 def get_soup_for_page(page):
@@ -34,8 +35,11 @@ def get_page_listing_urls(soup):
 def get_listing_urls():
         urls = []
         for page in range(NUM_PAGES):
-                soup = get_soup_for_page(page+1)
-                urls.extend(get_page_listing_urls(soup))
+                try:
+                    soup = get_soup_for_page(page+1)
+                    urls.extend(get_page_listing_urls(soup))
+                except:
+                    break
         return urls
 
 def get_listing_soup(listing_url):
@@ -49,7 +53,8 @@ def get_listing_availability(listing_url):
         table_div = premap_div.contents[7]
         subtable = table_div.contents[5].table
         move_in_string = subtable.tr.contents[-2].b.contents[0]
-        return date_string_to_date(move_in_string) 
+        return date_string_to_date(move_in_string)
+
 
 def date_string_to_date(date_string):
         if date_string == "Immediate":
@@ -57,34 +62,53 @@ def date_string_to_date(date_string):
         else:
                 return datetime.datetime.strptime(date_string,"%b %d").replace(year=2017).date()
 
-def get_listings_with_availability():
+def write_row(f, availability_date, listing_url):
+    string = str(listing_url) + "," + str(availability_date)
+    print>>f, string
+
+def get_listings_with_availability(output_file):
         listing_urls = get_listing_urls()
         url_dates = {}
+        f = open(output_file, 'a')
         for listing_url in listing_urls:
+            try:
                 availability_date = get_listing_availability(listing_url)
                 url_dates[listing_url] = availability_date
+                write_row(f, availability_date, listing_url)
+            except:
+                continue
+        f.close()
         return url_dates
 
-def get_availability_stats():
-        listings_and_availability = get_listings_with_availability()
+def get_availability_stats(listings_file,filtered_listings_file, stats_file):
+        listings_and_availability = get_listings_with_availability(listings_file)
         total_listings = len(listings_and_availability)
         histogram = defaultdict(int)
         late_enough_dates = 0
         late_enough_listings = {}
+        filtered_listings_output = open(filtered_listings_file, "w")
         for listing in listings_and_availability:
                 avail_date = listings_and_availability[listing]
                 histogram[avail_date] += 1
                 if (avail_date >= EARLIEST_DATE):
                         late_enough_dates += 1
                         late_enough_listings[listing] = avail_date
-        print("Total number of listings: ")
-        print(total_listings)
-        print("Total number of listings with availability starting after " + str(EARLIEST_DATE))
-        print(late_enough_dates)
-        print("Percentage: ")
-        print(float(late_enough_dates)/float(total_listings))
-        print(histogram)
-        print("Listings that are available after the indicated date: ")
-        print(late_enough_listings)
+                        write_row(filtered_listings_output,avail_date,listing)
+        filtered_listings_output.close()
+        stats_output = open(stats_file,"w")
+        print>> stats_output, "Total number of listings: "
+        print>> stats_output,str(total_listings)
+        print>> stats_output,("Total number of listings with availability starting after " + str(EARLIEST_DATE))
+        print>> stats_output,str(late_enough_dates)
+        print>> stats_output,"Percentage: "
+        print>> stats_output,str((float(late_enough_dates)/float(total_listings)))
+        print>> stats_output,str(histogram)
+        stats_output.close()
 
-get_availability_stats()
+def main():
+    listings_file = sys.argv[1] # store individual listings results here
+    filtered_listings_file = sys.argv[2] # store output listings results here
+    stats_file = sys.argv[3]
+    get_availability_stats(listings_file,filtered_listings_file,stats_file)
+
+main()
