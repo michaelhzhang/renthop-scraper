@@ -35,6 +35,7 @@ def get_page_listing_urls(soup):
 def get_listing_urls():
         urls = []
         for page in range(NUM_PAGES):
+                print("Fetching page " + str(page) + " of listings")
                 try:
                     soup = get_soup_for_page(page+1)
                     urls.extend(get_page_listing_urls(soup))
@@ -70,7 +71,11 @@ def get_listings_with_availability(output_file):
         listing_urls = get_listing_urls()
         url_dates = {}
         f = open(output_file, 'a')
+        listings_tried = 0
         for listing_url in listing_urls:
+            listings_tried += 1
+            if ((listings_tried % 50) == 0):
+                print("Getting availability for listing " + str(listings_tried))
             try:
                 availability_date = get_listing_availability(listing_url)
                 url_dates[listing_url] = availability_date
