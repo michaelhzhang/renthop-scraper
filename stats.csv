@@ -1,0 +1,7 @@
+Total number of listings: 
+4600
+Total number of listings with availability starting after 2017-07-15
+2
+Percentage: 
+0.000434782608696
+defaultdict(<type 'int'>, {datetime.date(2017, 9, 1): 1, datetime.date(2017, 5, 26): 1, datetime.date(2017, 6, 28): 4, datetime.date(2017, 5, 24): 2, datetime.date(2017, 6, 2): 23, datetime.date(2017, 7, 4): 3, datetime.date(2017, 5, 23): 2, datetime.date(2017, 6, 4): 1, datetime.date(2017, 6, 19): 1, datetime.date(2017, 5, 25): 1, datetime.date(2017, 6, 10): 3, datetime.date(2017, 5, 19): 1, datetime.date(2017, 6, 8): 2, datetime.date(2017, 6, 23): 16, datetime.date(2017, 5, 17): 1, datetime.date(2017, 6, 21): 3, datetime.date(2017, 5, 31): 2, datetime.date(2017, 6, 27): 2, datetime.date(2017, 7, 7): 3, datetime.date(2017, 7, 1): 10, datetime.date(2017, 7, 3): 2, datetime.date(2017, 6, 3): 2, datetime.date(2017, 6, 1): 78, datetime.date(2017, 5, 29): 2, datetime.date(2017, 6, 7): 10, datetime.date(2017, 6, 18): 1, datetime.date(2017, 5, 22): 6, datetime.date(2017, 6, 5): 1, datetime.date(2017, 6, 16): 12, datetime.date(2017, 5, 20): 2, datetime.date(2017, 6, 22): 4, datetime.date(2017, 6, 9): 6, datetime.date(2017, 6, 20): 1, datetime.date(2017, 5, 16): 4366, datetime.date(2017, 6, 15): 3, datetime.date(2017, 6, 26): 2, datetime.date(2017, 5, 30): 2, datetime.date(2017, 6, 13): 3, datetime.date(2017, 5, 27): 4, datetime.date(2017, 7, 6): 10, datetime.date(2017, 8, 1): 1})
